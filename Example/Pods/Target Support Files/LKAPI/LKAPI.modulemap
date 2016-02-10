@@ -1,0 +1,6 @@
+framework module LKAPI {
+  umbrella header "LKAPI-umbrella.h"
+
+  export *
+  module * { export * }
+}

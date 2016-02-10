@@ -1,9 +1,11 @@
 source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/Lightningkite/LKPodspec.git'
 use_frameworks!
 
 
 target 'LKAPI_Tests', :exclusive => true do
   pod 'LKAPI', :path => '../'
-
+  
+  pod 'LKEnvironment'
   
 end

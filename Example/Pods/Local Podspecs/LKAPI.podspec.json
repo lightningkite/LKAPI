@@ -1,0 +1,29 @@
+{
+  "name": "LKAPI",
+  "version": "0.1.0",
+  "summary": "Wrapper around Alamofire",
+  "description": "Wrapper built around Alamofire to make working with APIs easier",
+  "homepage": "https://github.com/Lightningkite/LKAPI",
+  "license": "MIT",
+  "authors": {
+    "Erik Sargent": "erik@lightningkite.com"
+  },
+  "source": {
+    "git": "https://github.com/LKApi/LKAPI.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "frameworks": "SystemConfiguration",
+  "dependencies": {
+    "Alamofire": [
+
+    ],
+    "LKEnvironment": [
+
+    ]
+  }
+}
