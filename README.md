@@ -1,6 +1,6 @@
 # LKAPI
 
-[![CI Status](http://img.shields.io/travis/Erik Sargent/LKAPI.svg?style=flat)](https://travis-ci.org/Erik Sargent/LKAPI)
+[![Circle CI](https://circleci.com/gh/lightningkite/LKAPI.svg?style=svg)](https://circleci.com/gh/lightningkite/LKAPI)
 [![Version](https://img.shields.io/cocoapods/v/LKAPI.svg?style=flat)](http://cocoapods.org/pods/LKAPI)
 [![License](https://img.shields.io/cocoapods/l/LKAPI.svg?style=flat)](http://cocoapods.org/pods/LKAPI)
 [![Platform](https://img.shields.io/cocoapods/p/LKAPI.svg?style=flat)](http://cocoapods.org/pods/LKAPI)
