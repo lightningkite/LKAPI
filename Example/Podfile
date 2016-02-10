@@ -1,0 +1,9 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+
+target 'LKAPI_Tests', :exclusive => true do
+  pod 'LKAPI', :path => '../'
+
+  
+end
