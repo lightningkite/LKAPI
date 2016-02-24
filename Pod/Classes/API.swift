@@ -42,8 +42,11 @@ public protocol Routable: URLRequestConvertible {
 	///Path to the endpoint
 	var path: NSURL { get }
 	
-	///Optional parameters to send up with each request
+	///Optional parameters to send up in the body of each request
 	var parameters: [String: AnyObject]? { get }
+	
+	///Optional http headers to send up with each request
+	var headers: [(String, String)]? { get }
 	
 	///Mock data to return for tests
 	var mockData: AnyObject? { get }
@@ -151,5 +154,27 @@ public class API {
 				success?(response.result.value)
 				
 			}.description
+	}
+}
+
+
+public extension API {
+	///Load in and parse the stored JSON file
+	public class func mockedDataObject(path: String) -> AnyObject? {
+		do {
+			if let dataPath = NSBundle.mainBundle().pathForResource(path, ofType: "json"),
+				data = NSData(contentsOfFile: dataPath) {
+					
+					return try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+			}
+			else {
+				print("❌ Unable to load file: \(path)")
+				return nil
+			}
+		}
+		catch let exception {
+			print("❌ Error occured while parsing JSON", exception)
+			return nil
+		}
 	}
 }
