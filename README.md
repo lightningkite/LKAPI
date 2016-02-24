@@ -60,11 +60,33 @@ enum Router: Routable {
         }
     }
     
+    ///Optional headers to send up with each request
+	var headers: [(String, String)]? {
+		switch self {
+		case .Login(let email, let password):
+			return nil
+			
+		default:
+			if let token = someToken {
+				return [("Authorization", "Token \(token)")]
+			}
+			
+			return nil
+		}
+	}
+    
     
     ///URLRequest object
     var URLRequest: NSMutableURLRequest {
         let request = NSMutableURLRequest(URL: path)
         request.HTTPMethod = method.rawValue
+        
+        if let headers = headers {
+			for header in headers {
+				request.setValue(header.1, forHTTPHeaderField: header.0)
+			}
+		}
+        
         let encoding = Alamofire.ParameterEncoding.JSON
         
         return encoding.encode(request, parameters: parameters).0
@@ -105,6 +127,9 @@ extension API {
 
 It is also recommended that the models are configured so the data from the API can be passed into an initializer for parsing.
 
+
+####Mocked data
+When adding mocked data, it's recommended you add a `.JSON` file with the mocked data to be returned and return it using the `API.mockedDataObject(path: String)` function.
 
 
 ## Author
