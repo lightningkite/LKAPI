@@ -20,11 +20,13 @@ public struct Failure {
 	public let error: ErrorType
 	public let message: String?
 	public let code: Int?
+	public let data: [String: AnyObject]
 	
-	public init(error: ErrorType, message: String? = nil, code: Int? = nil) {
+	public init(error: ErrorType, message: String? = nil, code: Int? = nil, data: [String: AnyObject] = [String: AnyObject]()) {
 		self.error = error
 		self.message = message
 		self.code = code
+		self.data = data
 	}
 }
 
@@ -128,23 +130,24 @@ public class API {
 						//else there really was an error, so parse any data, and return a failure
 					else if let error = response.result.error {
 						var message = "There was an error"
+						var responseData = [String: AnyObject]()
 						
 						do {
 							if let data = response.data, values = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [String: AnyObject] {
+								responseData = values
 								if let error = values["message"] as? String {
 									message = error
 								}
 							}
 						} catch _ {
 							if let data = response.data, error = String(data: data, encoding: NSUTF8StringEncoding) {
-								print(error)
 								message = error
 							}
 						}
 						
-						print("Status code \(response.response?.statusCode). message: \(message)\n")
+						print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
 						
-						failure?(Failure(error: error, message: message, code: response.response?.statusCode))
+						failure?(Failure(error: error, message: message, code: response.response?.statusCode, data: responseData))
 					}
 					
 					return
