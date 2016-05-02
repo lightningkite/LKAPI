@@ -1,12 +1,59 @@
 # LKAPI
 
-[![Circle CI](https://circleci.com/gh/lightningkite/LKAPI.svg?style=svg)](https://circleci.com/gh/lightningkite/LKAPI)
+Microframework for interacting with Alamofire in swift, and defining a strict list of endpoints and how they are used.
+
+[![Circle CI](https://circleci.com/gh/lightningkite/LKAPI.svg?style=svg)](https://circleci.com/gh/lightningkite/LKAPI) 
+
 
 ## Usage
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+LKAPI lets you define an enum with a list of your endpoints
 
-## Requirements
+```swift
+enum Router: Routable {
+	case Login(email: String, password: String)
+	case Signup(name: String, email: String, password: String)
+...
+```
+
+And map how those endpoints work by defining the HTTPMethod, path, parameters, headers, and even mock data for writing unit tests.
+
+```swift
+...
+	var method: Alamofire.Method {
+		switch self {
+		case .Login, .Signup:
+			return .POST
+		}
+	}
+	
+	var path: NSURL {
+		switch self {
+		case .Login:
+			return NSURL(string: "http://mysuperawesomeapp.com/login")!
+		case .Signup:
+			return NSURL(string: "http://mysuperawesomeapp.com/signup")!
+		}
+	}
+```
+
+`method` and `path` are required to use the `Routable`. You can also define the `parameters`, `headers` and `mockData`.
+
+To perform one of the requests, call `.request` on the `Routable` object
+
+```swift
+Router.Login("My Email", password: "Pass123").request({ data in
+	//Handle successful response
+}) { error in
+	//Handle failure
+}
+``` 
+
+`API` can also perform a standalone request
+
+```swift
+func request(URLRequest: NSURLRequest, success: successCallback?, failure: failureCallback?)
+```
 
 ## Installation
 
@@ -14,9 +61,23 @@ LKAPI is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-source 'https://github.com/Lightningkite/LKPodspec.git'
-
 pod "LKAPI"
+```
+
+## Environment
+
+LKAPI includes a class called `Environment`. Environment makes it easy to have multiple targets defined in a project and have different parameters in each. For example, you could have one target for you production API, another for the staging one, and one more for unit tests. The production environment would have the production URL defined, and the staging endpoint would define the staging URL. You can also define a target for Testing which LKAPI will automatically detect and return your mocked data if it exists. Mocked data should be passed to the `Routable` object as the name of a `.json` file that contains the data for an endpoint. The string should only be the name of the file, without '.json'.
+
+To set up an environment, create a file called **`Target-Name`-Env.plist**. Inside of this file you can define different keys and their corresponding values for each target. Make sure the properties match between environment files. For a testing target, create a **description** property with the value **Testing**.
+
+Next, extend `Environment` to customize the properties you have defined. Add a static function for each property you add to the plist other than `description`. For example:
+
+```Swift
+extension Environment {
+	static var apiBasePath: String {
+	    return Environment.environmentDict["apiBasePath"] as? String ?? ""
+	}
+}
 ```
 
 ## Setup
@@ -76,6 +137,7 @@ enum Router: Routable {
 	}
     
     
+    //Only define if you need to customize it. This is returned by default
     ///URLRequest object
     var URLRequest: NSMutableURLRequest {
         let request = NSMutableURLRequest(URL: path)
@@ -94,7 +156,7 @@ enum Router: Routable {
     
     
     ///Mock data to return for tests
-    var mockData: AnyObject? {
+    var mockData: String? {
     	return nil
     }
 }
@@ -108,11 +170,7 @@ extension API {
     class func login(email: String, password: String, success: (User -> ())?, failure: failureCallback?) {
         //Do any field validation
         
-        //Create the route object
-        let route = Router.Login(email, password)
-        
-        //Send the request, and handle the response
-        request(route, success: { data in
+        Router.Login(email, password: password).request(route, success: { data in
             if let data = data as? [String: AnyObject] {
                 let user = User(data: data)
                 success?(user)
@@ -126,10 +184,6 @@ extension API {
 ```
 
 It is also recommended that the models are configured so the data from the API can be passed into an initializer for parsing.
-
-
-####Mocked data
-When adding mocked data, it's recommended you add a `.JSON` file with the mocked data to be returned and return it using the `API.mockedDataObject(path: String)` function.
 
 
 ## Author

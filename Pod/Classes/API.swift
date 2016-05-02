@@ -51,7 +51,7 @@ public protocol Routable: URLRequestConvertible {
 	var headers: [HTTPHeader]? { get }
 	
 	///Mock data to return for tests
-	var mockData: AnyObject? { get }
+	var mockData: String? { get }
 	
 	/// The URL request.
 	var URLRequest: NSMutableURLRequest { get }
@@ -88,7 +88,7 @@ public extension Routable {
 	}
 	
 	///Mock data to return for tests
-	var mockData: AnyObject? {
+	var mockData: String? {
 		return nil
 	}
 	
@@ -128,7 +128,7 @@ public class API {
 	public class func request(route: Routable, success: successCallback?, failure: failureCallback?) {
 		//Test if the data should be mocked and return the mock data instead
 		if Environment.envDescription == "Testing" {
-			if let mockData = route.mockData {
+			if let mockString = route.mockData, mockData = API.mockedDataObject(mockString) {
 				success?(mockData)
 			}
 			else {
