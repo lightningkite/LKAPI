@@ -10,7 +10,6 @@ import Foundation
 import SystemConfiguration
 
 import Alamofire
-import LKEnvironment
 
 
 public typealias successCallback = (AnyObject? -> ())
