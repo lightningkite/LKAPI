@@ -23,5 +23,4 @@ Pod::Spec.new do |s|
 
   s.frameworks = 'SystemConfiguration'
   s.dependency 'Alamofire'
-  s.dependency 'LKEnvironment'  
 end

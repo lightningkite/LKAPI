@@ -5,7 +5,5 @@ use_frameworks!
 
 target 'LKAPI_Tests', :exclusive => true do
   pod 'LKAPI', :path => '../'
-  
-  pod 'LKEnvironment'
-  
+  pod 'Alamofire'  
 end

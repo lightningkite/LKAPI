@@ -1,21 +1,18 @@
 PODS:
-  - Alamofire (3.2.0)
-  - LKAPI (0.1.0):
+  - Alamofire (3.3.1)
+  - LKAPI (0.1.3):
     - Alamofire
-    - LKEnvironment
-  - LKEnvironment (0.1.1)
 
 DEPENDENCIES:
+  - Alamofire
   - LKAPI (from `../`)
-  - LKEnvironment
 
 EXTERNAL SOURCES:
   LKAPI:
     :path: ../
 
 SPEC CHECKSUMS:
-  Alamofire: 4da478599fccddff361205c8929333d7fe18dceb
-  LKAPI: e417b67bbff86b3f951fcbb74231794f2fd2cd5c
-  LKEnvironment: 1815f15ba8979f84d78808199912b77c239699ca
+  Alamofire: 369bc67b6f5ac33ded3648d7bd21c5bfb91c2ecc
+  LKAPI: 59866423b4448872e1a3e500056888889913fa48
 
 COCOAPODS: 0.39.0

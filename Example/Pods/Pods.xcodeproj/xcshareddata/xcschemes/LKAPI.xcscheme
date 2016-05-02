@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'DE125D91BFA57A8144E385D4'
+               BlueprintIdentifier = 'E23CADB8C5BE2CEE64AC6608'
                BlueprintName = 'LKAPI'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'LKAPI.framework'>
