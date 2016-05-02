@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		607FACEC1AFB9204008FA782 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* APITests.swift */; };
 		6FBF4E879B7EC7D0D10759FB /* Pods_LKAPI_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDE5DACBF32E6149F164429 /* Pods_LKAPI_Tests.framework */; };
-		BFA5E1941CD7E8C40041CF6E /* EnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5E1931CD7E8C40041CF6E /* EnvironmentTests.swift */; };
-		BFA5E1961CD7EA0D0041CF6E /* LKAPI-Example-Env.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFA5E1951CD7EA0D0041CF6E /* LKAPI-Example-Env.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,8 +21,6 @@
 		7DDE5DACBF32E6149F164429 /* Pods_LKAPI_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LKAPI_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8642178C40AD8705BC647625 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		AF213812B10805C7C6D522F1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		BFA5E1931CD7E8C40041CF6E /* EnvironmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentTests.swift; sourceTree = "<group>"; };
-		BFA5E1951CD7EA0D0041CF6E /* LKAPI-Example-Env.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "LKAPI-Example-Env.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,9 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACEB1AFB9204008FA782 /* APITests.swift */,
-				BFA5E1931CD7E8C40041CF6E /* EnvironmentTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
-				BFA5E1951CD7EA0D0041CF6E /* LKAPI-Example-Env.plist */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -166,7 +160,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFA5E1961CD7EA0D0041CF6E /* LKAPI-Example-Env.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +219,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACEC1AFB9204008FA782 /* APITests.swift in Sources */,
-				BFA5E1941CD7E8C40041CF6E /* EnvironmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

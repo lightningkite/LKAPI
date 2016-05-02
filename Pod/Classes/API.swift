@@ -15,6 +15,7 @@ import LKEnvironment
 
 public typealias successCallback = (AnyObject? -> ())
 public typealias failureCallback = (Failure -> ())
+public typealias HTTPHeader = (field: String, value: String)
 
 public struct Failure {
 	public let error: ErrorType
@@ -48,47 +49,91 @@ public protocol Routable: URLRequestConvertible {
 	var parameters: [String: AnyObject]? { get }
 	
 	///Optional http headers to send up with each request
-	var headers: [(String, String)]? { get }
+	var headers: [HTTPHeader]? { get }
 	
 	///Mock data to return for tests
 	var mockData: AnyObject? { get }
+	
+	/// The URL request.
+	var URLRequest: NSMutableURLRequest { get }
+	
+	///Perform the request for the request
+	func request(success: successCallback?, failure: failureCallback?)
 }
 
-
-///Test for network connectivity
-public var networkAvailable: Bool {
-	var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
-	zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
-	zeroAddress.sin_family = sa_family_t(AF_INET)
-	
-	guard let defaultRouteReachability = withUnsafePointer(&zeroAddress, {
-		SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
-	}) else {
-		return false
+public extension Routable {
+	///URLRequest object
+	var URLRequest: NSMutableURLRequest {
+		let request = NSMutableURLRequest(URL: path)
+		request.HTTPMethod = method.rawValue
+		
+		if let headers = headers {
+			for header in headers {
+				request.setValue(header.value, forHTTPHeaderField: header.field)
+			}
+		}
+		
+		let encoding = Alamofire.ParameterEncoding.JSON
+		
+		return encoding.encode(request, parameters: parameters).0
 	}
 	
-	var flags: SCNetworkReachabilityFlags = []
-	if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-		return false
+	///Optional parameters to send up in the body of each request
+	var parameters: [String: AnyObject]? {
+		return nil
 	}
 	
-	let isReachable = flags.contains(.Reachable)
-	let needsConnection = flags.contains(.ConnectionRequired)
+	///Optional http headers to send up with each request
+	var headers: [HTTPHeader]? {
+		return nil
+	}
 	
-	return isReachable && !needsConnection
+	///Mock data to return for tests
+	var mockData: AnyObject? {
+		return nil
+	}
+	
+	///Perform the request for the route
+	func request(success: successCallback?, failure: failureCallback?) {
+		API.request(self, success: success, failure: failure)
+	}
 }
 
 
 public class API {
+	///Test for network connectivity
+	public static var networkAvailable: Bool {
+		var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+		zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
+		zeroAddress.sin_family = sa_family_t(AF_INET)
+		
+		guard let defaultRouteReachability = withUnsafePointer(&zeroAddress, {
+			SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
+		}) else {
+			return false
+		}
+		
+		var flags: SCNetworkReachabilityFlags = []
+		if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+			return false
+		}
+		
+		let isReachable = flags.contains(.Reachable)
+		let needsConnection = flags.contains(.ConnectionRequired)
+		
+		return isReachable && !needsConnection
+	}
+	
+	
 	///Make a network request based on a route
 	public class func request(route: Routable, success: successCallback?, failure: failureCallback?) {
 		//Test if the data should be mocked and return the mock data instead
-		if Environment.envDescription == "Testing" && route.path.URLString.containsString("mockrequest") {
+		if Environment.envDescription == "Testing" {
 			if let mockData = route.mockData {
 				success?(mockData)
 			}
 			else {
-				failure?(Failure(error: NetworkError.NoDataToMock))
+				request(route.URLRequest, success: success, failure: failure)
 			}
 		}
 		else {
@@ -106,7 +151,6 @@ public class API {
 			return
 		}
 		
-		
 		var debugString = ""
 		if URLRequest.URLRequest.HTTPMethod == "GET" {
 			debugString += "⬇️"
@@ -119,7 +163,9 @@ public class API {
 			.responseJSON { response in
 				
 				debugString += response.result.isSuccess ? " ✅" : " ❌"
-				print(debugString)
+				#if DEBUG
+					print(debugString)
+				#endif
 				
 				//Make sure there was no error
 				guard response.result.isSuccess else {
@@ -145,7 +191,9 @@ public class API {
 							}
 						}
 						
-						print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
+						#if DEBUG
+							print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
+						#endif
 						
 						failure?(Failure(error: error, message: message, code: response.response?.statusCode, data: responseData))
 					}
@@ -181,3 +229,4 @@ public extension API {
 		}
 	}
 }
+
