@@ -56,7 +56,7 @@ public protocol Routable: URLRequestConvertible {
 	/// The URL request.
 	var URLRequest: NSMutableURLRequest { get }
 	
-	///Perform the request for the request
+	///Perform the request for the route
 	func request(success: successCallback?, failure: failureCallback?)
 }
 
@@ -162,9 +162,7 @@ public class API {
 			.responseJSON { response in
 				
 				debugString += response.result.isSuccess ? " ✅" : " ❌"
-				#if DEBUG
-					print(debugString)
-				#endif
+				print(debugString)
 				
 				//Make sure there was no error
 				guard response.result.isSuccess else {
@@ -190,9 +188,7 @@ public class API {
 							}
 						}
 						
-						#if DEBUG
-							print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
-						#endif
+						print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
 						
 						failure?(Failure(error: error, message: message, code: response.response?.statusCode, data: responseData))
 					}
