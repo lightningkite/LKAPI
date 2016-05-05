@@ -12,10 +12,14 @@ import SystemConfiguration
 import Alamofire
 
 
+///Successful request callback
 public typealias successCallback = (AnyObject? -> ())
+///Failed request callback
 public typealias failureCallback = (Failure -> ())
+///Represents a header for a request
 public typealias HTTPHeader = (field: String, value: String)
 
+///Encapsulates a failed response from a server
 public struct Failure {
 	public let error: ErrorType
 	public let message: String?
@@ -30,13 +34,14 @@ public struct Failure {
 	}
 }
 
+///Default network ErrorTypes
 public enum NetworkError: ErrorType {
 	case NoConnection
 	case NoDataToMock
 	case BadData
 }
 
-
+///Represents a declaration of a Routable network request
 public protocol Routable: URLRequestConvertible {
 	///HTTP Method for the request
 	var method: Alamofire.Method { get }
@@ -60,6 +65,7 @@ public protocol Routable: URLRequestConvertible {
 	func request(success: successCallback?, failure: failureCallback?)
 }
 
+///Default values for many routable properties
 public extension Routable {
 	///URLRequest object
 	var URLRequest: NSMutableURLRequest {
@@ -99,6 +105,7 @@ public extension Routable {
 }
 
 
+///API request manager
 public class API {
 	///Test for network connectivity
 	public static var networkAvailable: Bool {
@@ -203,7 +210,7 @@ public class API {
 	}
 }
 
-
+///Mocked data for testing requests
 public extension API {
 	///Load in and parse the stored JSON file
 	public class func mockedDataObject(path: String) -> AnyObject? {
