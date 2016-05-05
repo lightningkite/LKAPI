@@ -1,6 +1,11 @@
 ## Change Log
 
-### upcoming (2016/05/03 22:24 +00:00)
+### 1.0.2 (2016/05/05 16:25 +00:00)
+- [54e91c9](https://github.com/lightningkite/LKAPI/commit/54e91c986eebcd4d0ec6d8982058a6e70ec6d0c4) Updating podspec (@eriksargent)
+- [4fc88b7](https://github.com/lightningkite/LKAPI/commit/4fc88b7ba50088b42eb7a7ecd24a8ba6f0b0d605) Improving documentation (@eriksargent)
+- [369d001](https://github.com/lightningkite/LKAPI/commit/369d00151d0b23bb4205faaf4391fde2aab8ae4a) Adding changelog (@eriksargent)
+
+### 1.0.1 (2016/05/03 22:23 +00:00)
 - [6444038](https://github.com/lightningkite/LKAPI/commit/6444038b481408b692c166cfffd451eb3d8cbf40) Debugging bug fix (@eriksargent)
 
 ### 1.0 (2016/05/02 22:10 +00:00)
