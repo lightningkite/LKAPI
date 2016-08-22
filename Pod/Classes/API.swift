@@ -232,3 +232,56 @@ public extension API {
 	}
 }
 
+///Modal dictionary from the server
+public typealias ModelDict = [String: AnyObject]
+
+///Type that can be parsed from JSON
+public protocol Parseable {
+	static func parse(data: AnyObject) -> Parseable?
+}
+
+///Type that can be parsed from a ModelDict
+public protocol ModelType: Parseable {
+	init(data: ModelDict)
+	static func parse(data: AnyObject) -> Parseable?
+}
+
+extension ModelType {
+	public static func parse(data: AnyObject) -> Parseable? {
+		if let data = data as? ModelDict {
+			return self.init(data: data)
+		}
+		
+		return nil
+	}
+}
+
+public extension Dictionary where Key: StringLiteralConvertible, Value: AnyObject {
+	///Try to parse an object out of the dictionary, and return the fallback if it fails
+	public func parse<T>(key: String, or fallback: T) -> T {
+		if let dict = (self as? AnyObject) as? [String: AnyObject], object = dict[key] as? T {
+			return object
+		}
+		
+		return fallback
+	}
+	
+	///Parse the field as a Parseable
+	public func parse<T where T: Parseable>(key: String, type: T.Type) -> T? {
+		if let dict = (self as? AnyObject) as? [String: AnyObject], object = dict[key] {
+			return T.parse(object) as? T
+		}
+		
+		return nil
+	}
+	
+	///Parse the dictionary as a ModelType
+	public func parse<T where T: ModelType>(type: T.Type) -> T? {
+		if let dict = (self as? AnyObject) as? ModelDict {
+			return T(data: dict)
+		}
+		
+		return nil
+	}
+}
+
