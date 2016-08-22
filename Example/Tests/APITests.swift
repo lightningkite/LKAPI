@@ -134,12 +134,10 @@ enum Router: Routable {
 	}
 	
 	var parameters: [String : AnyObject]? {
-		switch self {
-		case .PostTest(let data):
+		if case .PostTest(let data) = self {
 			return data
-			
-		default:
-			return nil
 		}
+		
+		return nil
 	}
 }
