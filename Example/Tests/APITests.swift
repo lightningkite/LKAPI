@@ -6,12 +6,12 @@ import Alamofire
 
 class APITests: XCTestCase {
 	func testRequestGETSuccess() {
-		let expectation = expectationWithDescription("Web request")
+		let expectation = self.expectation(description: "Web request")
 		
-		let URLRequest = NSMutableURLRequest(URL: NSURL(string: "http://httpbin.org/get")!)
-		URLRequest.HTTPMethod = "GET"
+		var urlRequest = URLRequest(url: URL(string: "http://httpbin.org/get")!)
+		urlRequest.httpMethod = "GET"
 		
-		API.request(URLRequest, success: { data in
+		API.request(urlRequest, success: { data in
 			
 			expectation.fulfill()
 			XCTAssertNotNil(data)
@@ -21,16 +21,16 @@ class APITests: XCTestCase {
 				XCTFail("Should not have gotten a failure")
 		})
 		
-		waitForExpectationsWithTimeout(5.0, handler: nil)
+		waitForExpectations(timeout: 5.0, handler: nil)
 	}
 	
 	func testRequestGETFailure() {
-		let expectation = expectationWithDescription("Web request")
+		let expectation = self.expectation(description: "Web request")
 		
-		let URLRequest = NSMutableURLRequest(URL: NSURL(string: "http://httpbin.org/status/400")!)
-		URLRequest.HTTPMethod = "GET"
+		var urlRequest = URLRequest(url: URL(string: "http://httpbin.org/status/400")!)
+		urlRequest.httpMethod = "GET"
 		
-		API.request(URLRequest, success: { data in
+		API.request(urlRequest, success: { data in
 			
 			expectation.fulfill()
 			XCTFail("Should not have gotten a success")
@@ -40,26 +40,27 @@ class APITests: XCTestCase {
 				XCTAssertEqual(failure.code, 400)
 		})
 		
-		waitForExpectationsWithTimeout(5.0, handler: nil)
+		waitForExpectations(timeout: 5.0, handler: nil)
 	}
 	
 	func testRequestPOSTSuccess() {
-		let expectation = expectationWithDescription("Web request")
+		let expectation = self.expectation(description: "Web request")
 		
-		let URLRequest = NSMutableURLRequest(URL: NSURL(string: "http://httpbin.org/post")!)
-		URLRequest.HTTPMethod = "POST"
+		var urlRequest = URLRequest(url: URL(string: "http://httpbin.org/post")!)
+		urlRequest.httpMethod = "POST"
 		
-		let encoding = Alamofire.ParameterEncoding.JSON
-		let formData = ["some": "data"]
+		let encoding = Alamofire.ParameterEncoding.json
+		let formData: ModelDict = ["some": "data"]
 		
-		API.request(encoding.encode(URLRequest, parameters: formData).0, success: { data in
+		API.request(encoding.encode(urlRequest, parameters: formData).0, success: { data in
 			
 			expectation.fulfill()
 			XCTAssertNotNil(data)
-			if let data = data as? NSDictionary {
-				XCTAssertEqual(data["json"] as? NSDictionary, formData)
+			if let data = data as? ModelDict, let json = data["json"] as? ModelDict, let some = json["some"] as? String {
+				XCTAssertEqual(some, "data")
 			}
 			else {
+				print(data)
 				XCTFail("Unable to cast data")
 			}
 			
@@ -68,13 +69,13 @@ class APITests: XCTestCase {
 				XCTFail("Should not have gotten a failure")
 		})
 		
-		waitForExpectationsWithTimeout(5.0, handler: nil)
+		waitForExpectations(timeout: 5.0, handler: nil)
 	}
 	
 	func testGetRoute() {
-		let expectation = expectationWithDescription("Web request")
+		let expectation = self.expectation(description: "Web request")
 		
-		Router.GetTest.request({ data in
+		Router.getTest.request({ data in
 			expectation.fulfill()
 			XCTAssertNotNil(data)
 		}) { error in
@@ -82,21 +83,22 @@ class APITests: XCTestCase {
 			XCTFail("Should not have gotten a failure")
 		}
 		
-		waitForExpectationsWithTimeout(5.0, handler: nil)
+		waitForExpectations(timeout: 5.0, handler: nil)
 	}
 	
 	func testPostRoute() {
-		let expectation = expectationWithDescription("Web request")
+		let expectation = self.expectation(description: "Web request")
 		
-		let formData = ["test": "data"]
+		let formData: ModelDict = ["test": "data"]
 		
-		Router.PostTest(data: formData).request({ data in
+		Router.postTest(data: formData).request({ data in
 			expectation.fulfill()
 			XCTAssertNotNil(data)
-			if let data = data as? NSDictionary {
-				XCTAssertEqual(data["json"] as? NSDictionary, formData)
+			if let data = data as? ModelDict, let json = data["json"] as? ModelDict, let test = json["test"] as? String {
+				XCTAssertEqual(test, "data")
 			}
 			else {
+				print(data)
 				XCTFail("Unable to cast data")
 			}
 		}) { error in
@@ -104,37 +106,37 @@ class APITests: XCTestCase {
 			XCTFail("Should not have gotten a failure")
 		}
 		
-		waitForExpectationsWithTimeout(5.0, handler: nil)
+		waitForExpectations(timeout: 5.0, handler: nil)
 	}
 }
 
 
 enum Router: Routable {
-	case GetTest
-	case PostTest(data: [String: AnyObject])
+	case getTest
+	case postTest(data: ModelDict)
 	
-	var method: Alamofire.Method {
+	var method: Alamofire.HTTPMethod {
 		switch self {
-		case .GetTest:
-			return .GET
+		case .getTest:
+			return .get
 			
-		case .PostTest:
-			return .POST
+		case .postTest:
+			return .post
 		}
 	}
 	
-	var path: NSURL {
+	var path: URL {
 		switch self {
-		case .GetTest:
-			return NSURL(string: "http://httpbin.org/get")!
+		case .getTest:
+			return URL(string: "http://httpbin.org/get")!
 			
-		case .PostTest:
-			return NSURL(string: "http://httpbin.org/post")!
+		case .postTest:
+			return URL(string: "http://httpbin.org/post")!
 		}
 	}
 	
-	var parameters: [String : AnyObject]? {
-		if case .PostTest(let data) = self {
+	var parameters: ModelDict? {
+		if case .postTest(let data) = self {
 			return data
 		}
 		

@@ -13,20 +13,83 @@ import Alamofire
 
 
 ///Successful request callback
-public typealias successCallback = (AnyObject? -> ())
+public typealias successCallback = ((AnyObject?) -> ())
 ///Failed request callback
-public typealias failureCallback = (Failure -> ())
+public typealias failureCallback = ((Failure) -> ())
 ///Represents a header for a request
 public typealias HTTPHeader = (field: String, value: String)
 
+///Modal dictionary from the server
+public typealias ModelDict = [String: Any]
+
+///Type that can be parsed from JSON
+public protocol Parseable {
+	static func parse(_ data: Any) -> Parseable?
+}
+
+///Type that can be parsed from a ModelDict
+public protocol ModelType: Parseable {
+	init(data: ModelDict)
+	static func parse(_ data: Any) -> Parseable?
+}
+
+extension ModelType {
+	public static func parse(_ data: Any) -> Parseable? {
+		if let data = data as? ModelDict {
+			return self.init(data: data)
+		}
+		
+		return nil
+	}
+}
+
+public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
+	///Try to parse an object out of the dictionary, and return the fallback if it fails
+	public func parse<T>(_ key: String) -> T? {
+		if let dict = (self as? Any) as? ModelDict, let object = dict[key] as? T {
+			return object
+		}
+		
+		return nil
+	}
+	
+	///Try to parse an object out of the dictionary, and return the fallback if it fails
+	public func parse<T>(_ key: String, or fallback: T) -> T {
+		if let dict = (self as? Any) as? ModelDict, let object = dict[key] as? T {
+			return object
+		}
+		
+		return fallback
+	}
+	
+	///Parse the field as a Parseable
+	public func parse<T>(_ key: String) -> T? where T: Parseable {
+		if let dict = (self as? Any) as? ModelDict, let object = dict[key] {
+			return T.parse(object) as? T
+		}
+		
+		return nil
+	}
+	
+	///Parse the dictionary as a ModelType
+	public func parse<T>() -> T? where T: ModelType {
+		if let dict = (self as? Any) as? ModelDict {
+			return T(data: dict)
+		}
+		
+		return nil
+	}
+}
+
+
 ///Encapsulates a failed response from a server
 public struct Failure {
-	public let error: ErrorType
+	public let error: Error
 	public let message: String?
 	public let code: Int?
-	public let data: [String: AnyObject]
+	public let data: ModelDict
 	
-	public init(error: ErrorType, message: String? = nil, code: Int? = nil, data: [String: AnyObject] = [String: AnyObject]()) {
+	public init(error: Error, message: String? = nil, code: Int? = nil, data: ModelDict = [:]) {
 		self.error = error
 		self.message = message
 		self.code = code
@@ -35,22 +98,22 @@ public struct Failure {
 }
 
 ///Default network ErrorTypes
-public enum NetworkError: ErrorType {
-	case NoConnection
-	case NoDataToMock
-	case BadData
+public enum NetworkError: Error {
+	case noConnection
+	case noDataToMock
+	case badData
 }
 
 ///Represents a declaration of a Routable network request
 public protocol Routable: URLRequestConvertible {
 	///HTTP Method for the request
-	var method: Alamofire.Method { get }
+	var method: Alamofire.HTTPMethod { get }
 	
 	///Path to the endpoint
-	var path: NSURL { get }
+	var path: URL { get }
 	
 	///Optional parameters to send up in the body of each request
-	var parameters: [String: AnyObject]? { get }
+	var parameters: ModelDict? { get }
 	
 	///Optional http headers to send up with each request
 	var headers: [HTTPHeader]? { get }
@@ -59,18 +122,18 @@ public protocol Routable: URLRequestConvertible {
 	var mockData: String? { get }
 	
 	/// The URL request.
-	var URLRequest: NSMutableURLRequest { get }
+	var urlRequest: URLRequest { get }
 	
 	///Perform the request for the route
-	func request(success: successCallback?, failure: failureCallback?)
+	func request(_ success: successCallback?, failure: failureCallback?)
 }
 
 ///Default values for many routable properties
 public extension Routable {
 	///URLRequest object
-	var URLRequest: NSMutableURLRequest {
-		let request = NSMutableURLRequest(URL: path)
-		request.HTTPMethod = method.rawValue
+	var urlRequest: URLRequest {
+		var request = URLRequest(url: path)
+		request.httpMethod = method.rawValue
 		
 		if let headers = headers {
 			for header in headers {
@@ -78,13 +141,13 @@ public extension Routable {
 			}
 		}
 		
-		let encoding = Alamofire.ParameterEncoding.JSON
+		let encoding = Alamofire.ParameterEncoding.json
 		
 		return encoding.encode(request, parameters: parameters).0
 	}
 	
 	///Optional parameters to send up in the body of each request
-	var parameters: [String: AnyObject]? {
+	var parameters: [String: Any]? {
 		return nil
 	}
 	
@@ -99,66 +162,35 @@ public extension Routable {
 	}
 	
 	///Perform the request for the route
-	func request(success: successCallback?, failure: failureCallback?) {
+	func request(_ success: successCallback?, failure: failureCallback?) {
 		API.request(self, success: success, failure: failure)
 	}
 }
 
 
 ///API request manager
-public class API {
-	///Test for network connectivity
-	public static var networkAvailable: Bool {
-		var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
-		zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
-		zeroAddress.sin_family = sa_family_t(AF_INET)
-		
-		guard let defaultRouteReachability = withUnsafePointer(&zeroAddress, {
-			SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
-		}) else {
-			return false
-		}
-		
-		var flags: SCNetworkReachabilityFlags = []
-		if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-			return false
-		}
-		
-		let isReachable = flags.contains(.Reachable)
-		let needsConnection = flags.contains(.ConnectionRequired)
-		
-		return isReachable && !needsConnection
-	}
-	
-	
+open class API {
 	///Make a network request based on a route
-	public class func request(route: Routable, success: successCallback?, failure: failureCallback?) {
+	open class func request(_ route: Routable, success: successCallback?, failure: failureCallback?) {
 		//Test if the data should be mocked and return the mock data instead
 		if Environment.envDescription == "Testing" {
-			if let mockString = route.mockData, mockData = API.mockedDataObject(mockString) {
+			if let mockString = route.mockData, let mockData = API.mockedDataObject(mockString) {
 				success?(mockData)
 			}
 			else {
-				request(route.URLRequest, success: success, failure: failure)
+				request(route.urlRequest, success: success, failure: failure)
 			}
 		}
 		else {
-			request(route.URLRequest, success: success, failure: failure)
+			request(route.urlRequest, success: success, failure: failure)
 		}
 	}
 	
 	
 	///Make a general network request
-	public class func request(URLRequest: NSURLRequest, success: successCallback?, failure: failureCallback?) {
-		//Make sure the network connection is available
-		guard networkAvailable else {
-			let error = Failure(error: NetworkError.NoConnection)
-			failure?(error)
-			return
-		}
-		
+	open class func request(_ URLRequest: Foundation.URLRequest, success: successCallback?, failure: failureCallback?) {
 		var debugString = ""
-		if URLRequest.URLRequest.HTTPMethod == "GET" {
+		if URLRequest.urlRequest.httpMethod == "GET" {
 			debugString += "⬇️"
 		} else {
 			debugString += "⬆️"
@@ -177,20 +209,20 @@ public class API {
 					if response.response?.statusCode == 204 {
 						success?(nil)
 					}
-						//else there really was an error, so parse any data, and return a failure
+					//else there really was an error, so parse any data, and return a failure
 					else if let error = response.result.error {
 						var message = "There was an error"
-						var responseData = [String: AnyObject]()
+						var responseData = ModelDict()
 						
 						do {
-							if let data = response.data, values = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [String: AnyObject] {
+							if let data = response.data, let values = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? ModelDict {
 								responseData = values
 								if let error = values["message"] as? String {
 									message = error
 								}
 							}
 						} catch _ {
-							if let data = response.data, error = String(data: data, encoding: NSUTF8StringEncoding) {
+							if let data = response.data, let error = String(data: data, encoding: String.Encoding.utf8) {
 								message = error
 							}
 						}
@@ -204,7 +236,7 @@ public class API {
 				}
 				
 				//Otherwise it was a success, so return the data
-				success?(response.result.value)
+				success?(response.result.value as? AnyObject)
 				
 			}.description
 	}
@@ -213,12 +245,13 @@ public class API {
 ///Mocked data for testing requests
 public extension API {
 	///Load in and parse the stored JSON file
-	public class func mockedDataObject(path: String) -> AnyObject? {
+	public class func mockedDataObject(_ path: String) -> AnyObject? {
 		do {
-			if let dataPath = NSBundle.mainBundle().pathForResource(path, ofType: "json"),
-				data = NSData(contentsOfFile: dataPath) {
+			if let dataPath = Bundle.main.path(forResource: path, ofType: "json"),
+				let data = try? Data(contentsOf: URL(fileURLWithPath: dataPath)),
+				let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? AnyObject {
 					
-					return try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+					return json
 			}
 			else {
 				print("❌ Unable to load file: \(path)")
@@ -231,57 +264,3 @@ public extension API {
 		}
 	}
 }
-
-///Modal dictionary from the server
-public typealias ModelDict = [String: AnyObject]
-
-///Type that can be parsed from JSON
-public protocol Parseable {
-	static func parse(data: AnyObject) -> Parseable?
-}
-
-///Type that can be parsed from a ModelDict
-public protocol ModelType: Parseable {
-	init(data: ModelDict)
-	static func parse(data: AnyObject) -> Parseable?
-}
-
-extension ModelType {
-	public static func parse(data: AnyObject) -> Parseable? {
-		if let data = data as? ModelDict {
-			return self.init(data: data)
-		}
-		
-		return nil
-	}
-}
-
-public extension Dictionary where Key: StringLiteralConvertible, Value: AnyObject {
-	///Try to parse an object out of the dictionary, and return the fallback if it fails
-	public func parse<T>(key: String, or fallback: T) -> T {
-		if let dict = (self as? AnyObject) as? [String: AnyObject], object = dict[key] as? T {
-			return object
-		}
-		
-		return fallback
-	}
-	
-	///Parse the field as a Parseable
-	public func parse<T where T: Parseable>(key: String, type: T.Type) -> T? {
-		if let dict = (self as? AnyObject) as? [String: AnyObject], object = dict[key] {
-			return T.parse(object) as? T
-		}
-		
-		return nil
-	}
-	
-	///Parse the dictionary as a ModelType
-	public func parse<T where T: ModelType>(type: T.Type) -> T? {
-		if let dict = (self as? AnyObject) as? ModelDict {
-			return T(data: dict)
-		}
-		
-		return nil
-	}
-}
-
