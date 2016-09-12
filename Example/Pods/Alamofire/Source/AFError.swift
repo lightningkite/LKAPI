@@ -24,41 +24,53 @@
 
 import Foundation
 
-/// `AFError` is the error type returned by the Alamofire framework. It encompasses a few
-/// different types of errors, each with their own associated reasons.
+/// `AFError` is the error type returned by Alamofire. It encompasses a few different types of errors, each with
+/// their own associated reasons.
 ///
-/// - `.multipartEncodingFailed` errors are returned when some step in the multipart encoding process fails.
-///
-/// - `.responseValidationFailed` errors are returned when a `validate()` call fails.
-///
-/// - `.responseSerializationFailed` errors are returned when a response serializer encounters an error in the
-///     serialization process.
+/// - invalidURL:                  Returned when a `URLConvertible` type fails to create a valid `URL`.
+/// - parameterEncodingFailed:     Returned when a parameter encoding object throws an error during the encoding process.
+/// - multipartEncodingFailed:     Returned when some step in the multipart encoding process fails.
+/// - responseValidationFailed:    Returned when a `validate()` call fails.
+/// - responseSerializationFailed: Returned when a response serializer encounters an error in the serialization process.
 public enum AFError: Error {
-    /// The reason underlying the `AFError.multipartEncodingFailed` state.
+    /// The underlying reason the parameter encoding error occurred.
     ///
-    /// - `.bodyPartURLInvalid`:                    The `fileURL` provided for reading an encodable body part isn't a
-    ///                                             file URL.
-    /// - `.bodyPartFilenameInvalid`:               The filename of the `fileURL` provided has either an empty
-    ///                                             `lastPathComponent` or `pathExtension.
-    /// - `.bodyPartFileNotReachable`:              The file at the `fileURL` provided was not reachable.
-    /// - `.bodyPartFileNotReachableWithError`:     Attempting to check the reachability of the `fileURL` provided threw
-    ///                                             an error.
-    /// - `.bodyPartFileIsDirectory`:               The file at the `fileURL` provided is actually a directory.
-    /// - `.bodyPartFileSizeNotAvailable`:          The size of the file at the `fileURL` provided was not returned by
-    ///                                             the system.
-    /// - `.bodyPartFileSizeQueryFailedWithError`:  The attempt to find the size of the file at the `fileURL` provided
-    ///                                             threw an error.
-    /// - `.bodyPartInputStreamCreationFailed`:     An `InputStream` could not be created for the provided `fileURL`.
-    /// - `.outputStreamCreationFailed`:            An `OutputStream` could not be created when attempting to write the
-    ///                                             encoded data to disk.
-    /// - `.outputStreamFileAlreadyExists`:         The encoded body data could not be writtent disk because a file already
-    ///                                             exists at the provided `fileURL`.
-    /// - `.outputStreamURLInvalid`:                The `fileURL` provided for writing the encoded body data to disk is
-    ///                                             not a file URL.
-    /// - `.outputStreamWriteFailed`:               The attempt to write the encoded body data to disk failed with an
-    ///                                             underlying error.
-    /// - `.inputStreamReadFailed`:                 The attempt to read an encoded body part `InputStream` failed with
-    ///                                             underlying system error.
+    /// - missingURL:                 The URL request did not have a URL to encode.
+    /// - jsonEncodingFailed:         JSON serialization failed with an underlying system error during the
+    ///                               encoding process.
+    /// - propertyListEncodingFailed: Property list serialization failed with an underlying system error during
+    ///                               encoding process.
+    public enum ParameterEncodingFailureReason {
+        case missingURL
+        case jsonEncodingFailed(error: Error)
+        case propertyListEncodingFailed(error: Error)
+    }
+
+    /// The underlying reason the multipart encoding error occurred.
+    ///
+    /// - bodyPartURLInvalid:                   The `fileURL` provided for reading an encodable body part isn't a
+    ///                                         file URL.
+    /// - bodyPartFilenameInvalid:              The filename of the `fileURL` provided has either an empty
+    ///                                         `lastPathComponent` or `pathExtension.
+    /// - bodyPartFileNotReachable:             The file at the `fileURL` provided was not reachable.
+    /// - bodyPartFileNotReachableWithError:    Attempting to check the reachability of the `fileURL` provided threw
+    ///                                         an error.
+    /// - bodyPartFileIsDirectory:              The file at the `fileURL` provided is actually a directory.
+    /// - bodyPartFileSizeNotAvailable:         The size of the file at the `fileURL` provided was not returned by
+    ///                                         the system.
+    /// - bodyPartFileSizeQueryFailedWithError: The attempt to find the size of the file at the `fileURL` provided
+    ///                                         threw an error.
+    /// - bodyPartInputStreamCreationFailed:    An `InputStream` could not be created for the provided `fileURL`.
+    /// - outputStreamCreationFailed:           An `OutputStream` could not be created when attempting to write the
+    ///                                         encoded data to disk.
+    /// - outputStreamFileAlreadyExists:        The encoded body data could not be writtent disk because a file
+    ///                                         already exists at the provided `fileURL`.
+    /// - outputStreamURLInvalid:               The `fileURL` provided for writing the encoded body data to disk is
+    ///                                         not a file URL.
+    /// - outputStreamWriteFailed:              The attempt to write the encoded body data to disk failed with an
+    ///                                         underlying error.
+    /// - inputStreamReadFailed:                The attempt to read an encoded body part `InputStream` failed with
+    ///                                         underlying system error.
     public enum MultipartEncodingFailureReason {
         case bodyPartURLInvalid(url: URL)
         case bodyPartFilenameInvalid(in: URL)
@@ -77,57 +89,80 @@ public enum AFError: Error {
         case inputStreamReadFailed(error: Error)
     }
 
-    /// The reason underlying the `AFError.responseValidationFailed` state.
+    /// The underlying reason the response validation error occurred.
     ///
-    /// - `.missingContentType`:        The response did not contain a `Content-Type` and the `acceptableContentTypes`
-    ///                                 provided did not contain wildcard type.
-    /// - `unacceptableContentType`:    The response `Content-Type` did not match any type in the provided
-    ///    .                            `acceptableContentTypes`.
-    /// - `.unacceptableStatusCode`:    The response status code was not acceptable.
-    public enum ValidationFailureReason {
+    /// - dataFileNil:             The data file containing the server response did not exist.
+    /// - dataFileReadFailed:      The data file containing the server response could not be read.
+    /// - missingContentType:      The response did not contain a `Content-Type` and the `acceptableContentTypes`
+    ///                            provided did not contain wildcard type.
+    /// - unacceptableContentType: The response `Content-Type` did not match any type in the provided
+    ///                            `acceptableContentTypes`.
+    /// - unacceptableStatusCode:  The response status code was not acceptable.
+    public enum ResponseValidationFailureReason {
+        case dataFileNil
+        case dataFileReadFailed(at: URL)
         case missingContentType(acceptableContentTypes: [String])
         case unacceptableContentType(acceptableContentTypes: [String], responseContentType: String)
         case unacceptableStatusCode(code: Int)
     }
 
-    /// The reason underlying the `AFError.responseSerializationFailed` state.
+    /// The underlying reason the response serialization error occurred.
     ///
-    /// - `.inputDataNil`:                      The response contained no data.
-    /// - `.inputDataNilOrZeroLength`:          The response contained no data or the data was zero length.
-    /// - `.stringSerializationFailed`:         String serialization failed using the provided `String.Encoding`.
-    /// - `.jsonSerializationFailed`:           JSON serialization failed with an underlying system error.
-    /// - `.propertyListSerializationFailed`:   Proptery list serialization failed with an underlying system error.
-    public enum SerializationFailureReason {
+    /// - inputDataNil:                    The server response contained no data.
+    /// - inputDataNilOrZeroLength:        The server response contained no data or the data was zero length.
+    /// - inputFileNil:                    The file containing the server response did not exist.
+    /// - inputFileReadFailed:             The file containing the server response could not be read.
+    /// - stringSerializationFailed:       String serialization failed using the provided `String.Encoding`.
+    /// - jsonSerializationFailed:         JSON serialization failed with an underlying system error.
+    /// - propertyListSerializationFailed: Property list serialization failed with an underlying system error.
+    public enum ResponseSerializationFailureReason {
         case inputDataNil
         case inputDataNilOrZeroLength
+        case inputFileNil
+        case inputFileReadFailed(at: URL)
         case stringSerializationFailed(encoding: String.Encoding)
         case jsonSerializationFailed(error: Error)
         case propertyListSerializationFailed(error: Error)
     }
 
+    case invalidURL(url: URLConvertible)
+    case parameterEncodingFailed(reason: ParameterEncodingFailureReason)
     case multipartEncodingFailed(reason: MultipartEncodingFailureReason)
-    case responseValidationFailed(reason: ValidationFailureReason)
-    case responseSerializationFailed(reason: SerializationFailureReason)
+    case responseValidationFailed(reason: ResponseValidationFailureReason)
+    case responseSerializationFailed(reason: ResponseSerializationFailureReason)
 }
 
 // MARK: - Error Booleans
 
-public extension AFError {
-    /// Returns whether the AFError is a multipart encoding error. When true, the `url` and `underlyingError` properties
+extension AFError {
+    /// Returns whether the AFError is an invalid URL error.
+    public var isInvalidURLError: Bool {
+        if case .invalidURL = self { return true }
+        return false
+    }
+
+    /// Returns whether the AFError is a parameter encoding error. When `true`, the `underlyingError` property will
+    /// contain the associated value.
+    public var isParameterEncodingError: Bool {
+        if case .multipartEncodingFailed = self { return true }
+        return false
+    }
+
+    /// Returns whether the AFError is a multipart encoding error. When `true`, the `url` and `underlyingError` properties
     /// will contain the associated values.
     public var isMultipartEncodingError: Bool {
         if case .multipartEncodingFailed = self { return true }
         return false
     }
 
-    /// Returns whether the `AFError` is a response validation error. When true, the `acceptableContentTypes`,
+    /// Returns whether the `AFError` is a response validation error. When `true`, the `acceptableContentTypes`,
     /// `responseContentType`, and `responseCode` properties will contain the associated values.
     public var isResponseValidationError: Bool {
         if case .responseValidationFailed = self { return true }
         return false
     }
 
-    /// Returns whether the `AFError` is a response serialization error. When true, the `failedStringEncoding` and
+    /// Returns whether the `AFError` is a response serialization error. When `true`, the `failedStringEncoding` and
     /// `underlyingError` properties will contain the associated values.
     public var isResponseSerializationError: Bool {
         if case .responseSerializationFailed = self { return true }
@@ -137,7 +172,17 @@ public extension AFError {
 
 // MARK: - Convenience Properties
 
-public extension AFError {
+extension AFError {
+    /// The `URLConvertible` associated with the error.
+    public var urlConvertible: URLConvertible? {
+        switch self {
+        case .invalidURL(let url):
+            return url
+        default:
+            return nil
+        }
+    }
+
     /// The `URL` associated with the error.
     public var url: URL? {
         switch self {
@@ -148,10 +193,12 @@ public extension AFError {
         }
     }
 
-    /// The `Error` returned by a system framework associated with a `.multipartEncodingFailed` or
-    /// `.responseSerializationFailed` error.
+    /// The `Error` returned by a system framework associated with a `.parameterEncodingFailed`,
+    /// `.multipartEncodingFailed` or `.responseSerializationFailed` error.
     public var underlyingError: Error? {
         switch self {
+        case .parameterEncodingFailed(let reason):
+            return reason.underlyingError
         case .multipartEncodingFailed(let reason):
             return reason.underlyingError
         case .responseSerializationFailed(let reason):
@@ -202,12 +249,24 @@ public extension AFError {
     }
 }
 
+extension AFError.ParameterEncodingFailureReason {
+    var underlyingError: Error? {
+        switch self {
+        case .jsonEncodingFailed(let error), .propertyListEncodingFailed(let error):
+            return error
+        default:
+            return nil
+        }
+    }
+}
+
 extension AFError.MultipartEncodingFailureReason {
     var url: URL? {
         switch self {
         case .bodyPartURLInvalid(let url), .bodyPartFilenameInvalid(let url), .bodyPartFileNotReachable(let url),
-             .bodyPartFileIsDirectory(let url), .bodyPartFileSizeNotAvailable(let url), .bodyPartInputStreamCreationFailed(let url),
-             .outputStreamCreationFailed(let url), .outputStreamFileAlreadyExists(let url), .outputStreamURLInvalid(let url),
+             .bodyPartFileIsDirectory(let url), .bodyPartFileSizeNotAvailable(let url),
+             .bodyPartInputStreamCreationFailed(let url), .outputStreamCreationFailed(let url),
+             .outputStreamFileAlreadyExists(let url), .outputStreamURLInvalid(let url),
              .bodyPartFileNotReachableWithError(let url, _), .bodyPartFileSizeQueryFailedWithError(let url, _):
             return url
         default:
@@ -226,7 +285,7 @@ extension AFError.MultipartEncodingFailureReason {
     }
 }
 
-extension AFError.ValidationFailureReason {
+extension AFError.ResponseValidationFailureReason {
     var acceptableContentTypes: [String]? {
         switch self {
         case .missingContentType(let types), .unacceptableContentType(let types, _):
@@ -255,7 +314,7 @@ extension AFError.ValidationFailureReason {
     }
 }
 
-extension AFError.SerializationFailureReason {
+extension AFError.ResponseSerializationFailureReason {
     var failedStringEncoding: String.Encoding? {
         switch self {
         case .stringSerializationFailed(let encoding):
@@ -280,6 +339,10 @@ extension AFError.SerializationFailureReason {
 extension AFError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .invalidURL(let url):
+            return "URL is not valid: \(url)"
+        case .parameterEncodingFailed(let reason):
+            return reason.localizedDescription
         case .multipartEncodingFailed(let reason):
             return reason.localizedDescription
         case .responseValidationFailed(let reason):
@@ -290,32 +353,15 @@ extension AFError: LocalizedError {
     }
 }
 
-extension AFError.SerializationFailureReason {
+extension AFError.ParameterEncodingFailureReason {
     var localizedDescription: String {
         switch self {
-        case .inputDataNil:
-            return "Response could not be serialized, input data was nil."
-        case .inputDataNilOrZeroLength:
-            return "Response could not be serialized, input data was nil or zero length."
-        case .stringSerializationFailed(let encoding):
-            return "String could not be serialized with encoding: \(encoding)."
-        case .jsonSerializationFailed(let error):
-            return "JSON could not be serialized because of error:\n\(error.localizedDescription)"
-        case .propertyListSerializationFailed(let error):
-            return "PropertyList could not be serialized because of error:\n\(error.localizedDescription)"
-        }
-    }
-}
-
-extension AFError.ValidationFailureReason {
-    var localizedDescription: String {
-        switch self {
-        case .missingContentType(let types):
-            return "Response Content-Type was missing and acceptable content types (\(types.joined(separator: ","))) do not match \"*/*\"."
-        case .unacceptableContentType(let acceptableTypes, let responseType):
-            return "Response Content-Type \"\(responseType)\" does not match any acceptable types: \(acceptableTypes.joined(separator: ","))."
-        case .unacceptableStatusCode(let code):
-            return "Response status code was unacceptable: \(code)."
+        case .missingURL:
+            return "URL request to encode was missing a URL"
+        case .jsonEncodingFailed(let error):
+            return "JSON could not be encoded because of error:\n\(error.localizedDescription)"
+        case .propertyListEncodingFailed(let error):
+            return "PropertyList could not be encoded because of error:\n\(error.localizedDescription)"
         }
     }
 }
@@ -330,13 +376,19 @@ extension AFError.MultipartEncodingFailureReason {
         case .bodyPartFileNotReachable(let url):
             return "The URL provided is not reachable: \(url)"
         case .bodyPartFileNotReachableWithError(let url, let error):
-            return "The system returned an error while checking the provided URL for reachability.\nURL: \(url)\nError: \(error)"
+            return (
+                "The system returned an error while checking the provided URL for " +
+                "reachability.\nURL: \(url)\nError: \(error)"
+            )
         case .bodyPartFileIsDirectory(let url):
             return "The URL provided is a directory: \(url)"
         case .bodyPartFileSizeNotAvailable(let url):
             return "Could not fetch the file size from the provided URL: \(url)"
         case .bodyPartFileSizeQueryFailedWithError(let url, let error):
-            return "The system returned an error while attempting to fetch the file size from the provided URL.\nURL: \(url)\nError: \(error)"
+            return (
+                "The system returned an error while attempting to fetch the file size from the " +
+                "provided URL.\nURL: \(url)\nError: \(error)"
+            )
         case .bodyPartInputStreamCreationFailed(let url):
             return "Failed to create an InputStream for the provided URL: \(url)"
         case .outputStreamCreationFailed(let url):
@@ -349,6 +401,50 @@ extension AFError.MultipartEncodingFailureReason {
             return "OutputStream write failed with error: \(error)"
         case .inputStreamReadFailed(let error):
             return "InputStream read failed with error: \(error)"
+        }
+    }
+}
+
+extension AFError.ResponseSerializationFailureReason {
+    var localizedDescription: String {
+        switch self {
+        case .inputDataNil:
+            return "Response could not be serialized, input data was nil."
+        case .inputDataNilOrZeroLength:
+            return "Response could not be serialized, input data was nil or zero length."
+        case .inputFileNil:
+            return "Response could not be serialized, input file was nil."
+        case .inputFileReadFailed(let url):
+            return "Response could not be serialized, input file could not be read: \(url)."
+        case .stringSerializationFailed(let encoding):
+            return "String could not be serialized with encoding: \(encoding)."
+        case .jsonSerializationFailed(let error):
+            return "JSON could not be serialized because of error:\n\(error.localizedDescription)"
+        case .propertyListSerializationFailed(let error):
+            return "PropertyList could not be serialized because of error:\n\(error.localizedDescription)"
+        }
+    }
+}
+
+extension AFError.ResponseValidationFailureReason {
+    var localizedDescription: String {
+        switch self {
+        case .dataFileNil:
+            return "Response could not be validated, data file was nil."
+        case .dataFileReadFailed(let url):
+            return "Response could not be validated, data file could not be read: \(url)."
+        case .missingContentType(let types):
+            return (
+                "Response Content-Type was missing and acceptable content types " +
+                "(\(types.joined(separator: ","))) do not match \"*/*\"."
+            )
+        case .unacceptableContentType(let acceptableTypes, let responseType):
+            return (
+                "Response Content-Type \"\(responseType)\" does not match any acceptable types: " +
+                "\(acceptableTypes.joined(separator: ","))."
+            )
+        case .unacceptableStatusCode(let code):
+            return "Response status code was unacceptable: \(code)."
         }
     }
 }

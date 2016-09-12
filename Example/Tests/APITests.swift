@@ -49,10 +49,20 @@ class APITests: XCTestCase {
 		var urlRequest = URLRequest(url: URL(string: "http://httpbin.org/post")!)
 		urlRequest.httpMethod = "POST"
 		
-		let encoding = Alamofire.ParameterEncoding.json
+		let encoding = JSONEncoding()
 		let formData: ModelDict = ["some": "data"]
 		
-		API.request(encoding.encode(urlRequest, parameters: formData).0, success: { data in
+        guard let request = try? encoding.encode(urlRequest, with: formData) else {
+            XCTFail()
+            return
+        }
+        
+        guard let requestURL = request.urlRequest else {
+            XCTFail()
+            return
+        }
+        
+		API.request(requestURL, success: { data in
 			
 			expectation.fulfill()
 			XCTAssertNotNil(data)

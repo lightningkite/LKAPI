@@ -122,7 +122,7 @@ public protocol Routable: URLRequestConvertible {
 	var mockData: String? { get }
 	
 	/// The URL request.
-	var urlRequest: URLRequest { get }
+	var urlRequest: URLRequest? { get }
 	
 	///Perform the request for the route
 	func request(_ success: successCallback?, failure: failureCallback?)
@@ -131,23 +131,30 @@ public protocol Routable: URLRequestConvertible {
 ///Default values for many routable properties
 public extension Routable {
 	///URLRequest object
-	var urlRequest: URLRequest {
-		var request = URLRequest(url: path)
-		request.httpMethod = method.rawValue
-		
-		if let headers = headers {
-			for header in headers {
-				request.setValue(header.value, forHTTPHeaderField: header.field)
-			}
-		}
-		
-		let encoding = Alamofire.ParameterEncoding.json
-		
-		return encoding.encode(request, parameters: parameters).0
-	}
+    public func asURLRequest() throws -> URLRequest {
+        var request = URLRequest(url: path)
+        request.httpMethod = method.rawValue
+        
+        if let headers = headers {
+            for header in headers {
+                request.setValue(header.value, forHTTPHeaderField: header.field)
+            }
+        }
+        
+        let encoding = JSONEncoding()
+        
+        do {
+            let encodedRequest = try encoding.encode(request, with: parameters)
+            if let requestURL = encodedRequest.urlRequest {
+                return requestURL
+            }
+        } catch { }
+        
+        return request
+    }
 	
 	///Optional parameters to send up in the body of each request
-	var parameters: [String: Any]? {
+	var parameters: Parameters? {
 		return nil
 	}
 	
@@ -172,17 +179,22 @@ public extension Routable {
 open class API {
 	///Make a network request based on a route
 	open class func request(_ route: Routable, success: successCallback?, failure: failureCallback?) {
+        guard let routeURL = route.urlRequest else {
+            
+            return
+        }
+        
 		//Test if the data should be mocked and return the mock data instead
 		if Environment.envDescription == "Testing" {
 			if let mockString = route.mockData, let mockData = API.mockedDataObject(mockString) {
 				success?(mockData)
 			}
 			else {
-				request(route.urlRequest, success: success, failure: failure)
+				request(routeURL, success: success, failure: failure)
 			}
 		}
 		else {
-			request(route.urlRequest, success: success, failure: failure)
+			request(routeURL, success: success, failure: failure)
 		}
 	}
 	
@@ -190,7 +202,7 @@ open class API {
 	///Make a general network request
 	open class func request(_ URLRequest: Foundation.URLRequest, success: successCallback?, failure: failureCallback?) {
 		var debugString = ""
-		if URLRequest.urlRequest.httpMethod == "GET" {
+		if URLRequest.urlRequest?.httpMethod == "GET" {
 			debugString += "⬇️"
 		} else {
 			debugString += "⬆️"
