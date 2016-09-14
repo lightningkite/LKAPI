@@ -2,8 +2,13 @@ machine:
   xcode:
     version: "8.0"
 
+dependencies:
+  pre:
+    - cd Example && pod install
+
 test:
   override:
+    - pod install Example/
     - set -o pipefail &&
       xcodebuild
         CODE_SIGNING_REQUIRED=NO
