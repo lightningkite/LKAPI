@@ -8,7 +8,6 @@ dependencies:
 
 test:
   override:
-    - pod install Example/
     - set -o pipefail &&
       xcodebuild
         CODE_SIGNING_REQUIRED=NO
