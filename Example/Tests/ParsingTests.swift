@@ -36,6 +36,20 @@ class ParsingTests: XCTestCase {
 		XCTAssertEqual(dict.parse("string", or: ""), "")
 	}
 	
+	func testParseWithoutFallback() {
+		let dict: ModelDict = [
+			"int": 5,
+			"bool": true,
+			"double": 5.5,
+			"string": "Hello world!"
+		]
+		
+		XCTAssertEqual(dict.parse("int") ?? 0, 5)
+		XCTAssertEqual(dict.parse("bool") ?? false, true)
+		XCTAssertEqual(dict.parse("double") ?? 0.0, 5.5)
+		XCTAssertEqual(dict.parse("string") ?? "", "Hello world!")
+	}
+	
 	func testParseModelType() {
 		struct Type: ModelType {
 			let id: Int
@@ -52,7 +66,7 @@ class ParsingTests: XCTestCase {
 			"name": "Test"
 		]
 		
-		let parsed = dict.parse(Type)
+		let parsed: Type? = dict.parse()
 		
 		XCTAssertEqual(parsed?.id, 3)
 		XCTAssertEqual(parsed?.name, "Test")
@@ -76,7 +90,7 @@ class ParsingTests: XCTestCase {
 			]
 		]
 		
-		let parsed = dict.parse("object", type: ObjectType.self)
+		let parsed: ObjectType? = dict.parse("object")
 		
 		XCTAssertEqual(parsed?.id, 3)
 		XCTAssertEqual(parsed?.name, "Test")
@@ -87,7 +101,7 @@ class ParsingTests: XCTestCase {
 			"date": "2222-03-06"
 		]
 		
-		let parsedDate = dict.parse("date", type: NSDate.self)
+		let parsedDate = dict.parse("date") as Date?
 		
 		XCTAssertNotNil(parsedDate)
 		guard let date = parsedDate else {
@@ -95,8 +109,8 @@ class ParsingTests: XCTestCase {
 			return
 		}
 		
-		let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
-		let components = calendar?.components([.Year, .Month, .Day], fromDate: date)
+		let calendar = NSCalendar(calendarIdentifier: .gregorian)
+		let components = calendar?.components([.year, .month, .day], from: date)
 		
 		XCTAssertEqual(components?.year, 2222)
 		XCTAssertEqual(components?.month, 3)
@@ -114,7 +128,7 @@ class ParsingTests: XCTestCase {
 			"otherModel": otherDict
 		]
 		
-		struct Modal: ModelType {
+		struct Model: ModelType {
 			let id: Int
 			let name: String
 			let other: OtherModel?
@@ -122,7 +136,7 @@ class ParsingTests: XCTestCase {
 			init(data: ModelDict) {
 				id = data.parse("id", or: 0)
 				name = data.parse("name", or: "")
-				other = data.parse("otherModel", type: OtherModel.self)
+				other = data.parse("otherModel") as OtherModel?
 			}
 		}
 		
@@ -134,7 +148,7 @@ class ParsingTests: XCTestCase {
 			}
 		}
 		
-		let data = dict.parse(Modal)
+		let data = dict.parse() as Model?
 		
 		XCTAssertNotNil(data)
 		XCTAssertEqual(data?.id, 3)
@@ -144,12 +158,12 @@ class ParsingTests: XCTestCase {
 	}
 }
 
-extension NSDate: Parseable {
-	public static func parse(data: AnyObject) -> Parseable? {
-		let dateFormatter = NSDateFormatter()
+extension Date: Parseable {
+	public static func parse(_ data: Any) -> Parseable? {
+		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd"
 		
-		if let dateString = data as? String, date = dateFormatter.dateFromString(dateString) {
+		if let dateString = data as? String, let date = dateFormatter.date(from: dateString) {
 			return date
 		}
 		

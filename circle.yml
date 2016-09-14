@@ -1,6 +1,10 @@
 machine:
   xcode:
-    version: "7.3"
+    version: "8.0"
+
+dependencies:
+  pre:
+    - cd Example && pod install
 
 test:
   override:

@@ -6,32 +6,32 @@
 //
 //
 
-public class Environment {
-	private static let currentEnvironment = Environment()
-	private var _environmentDict: [String: AnyObject]? = nil
+open class Environment {
+	fileprivate static let currentEnvironment = Environment()
+	fileprivate var _environmentDict: [String: AnyObject]? = nil
 	
 	///Description of the current target
-	public static var envDescription: String {
+	open static var envDescription: String {
 		return Environment.environmentDict["description"] as? String ?? ""
 	}
 	
 	///Loads data from the Target_Name-Env File
-	public static var environmentDict: [String: AnyObject] {
+	open static var environmentDict: [String: AnyObject] {
 		if let environment = currentEnvironment._environmentDict {
 			return environment
 		}
 		
-		let bundle = NSBundle.mainBundle()
+		let bundle = Bundle.main
 		let key = kCFBundleNameKey as String
 		
-		guard let productName = bundle.objectForInfoDictionaryKey(key) as? String else {
+		guard let productName = bundle.object(forInfoDictionaryKey: key) as? String else {
 			return [:]
 		}
 		
 		let fileName = NSString(format: "%@-Env", productName) as String
 		
-		guard let filePath = bundle.pathForResource(fileName, ofType: "plist"),
-			dict = NSDictionary(contentsOfFile: filePath) as? [String: AnyObject]
+		guard let filePath = bundle.path(forResource: fileName, ofType: "plist"),
+			let dict = NSDictionary(contentsOfFile: filePath) as? [String: AnyObject]
 			
 			else {
 				return [:]
