@@ -121,9 +121,6 @@ public protocol Routable: URLRequestConvertible {
 	///Mock data to return for tests
 	var mockData: String? { get }
 	
-	/// The URL request.
-	var urlRequest: URLRequest? { get }
-	
 	///Perform the request for the route
 	func request(_ success: successCallback?, failure: failureCallback?)
 }
