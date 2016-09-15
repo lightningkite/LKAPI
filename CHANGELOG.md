@@ -1,5 +1,30 @@
 ## Change Log
 
+### upcoming (2016/09/15 16:14 +00:00)
+- [d37d9e0](https://github.com/lightningkite/LKAPI/commit/d37d9e017facfcf93344c04dafede8c1b24ceafb) UPdating cocoapods (@eriksargent)
+
+### 1.2.0 (2016/09/15 15:38 +00:00)
+- [e7064f9](https://github.com/lightningkite/LKAPI/commit/e7064f9c253a7e167d1dd0473dfc39467ad53fc3) UPdating Cocoapods (@eriksargent)
+- [#2](https://github.com/LightningKite/LKAPI/pull/2) Merge pull request #2 from lightningkite/swift3 (@lightningkite)
+- [9cf4fd7](https://github.com/lightningkite/LKAPI/commit/9cf4fd7e62ee95dfef411042353dc86bcaf6a0da) Adding a gemfile (@eriksargent)
+- [5991c88](https://github.com/lightningkite/LKAPI/commit/5991c88fafd44618a102ffa571e0d103363db1fc) Fixing circle.yml (@eriksargent)
+- [14bc685](https://github.com/lightningkite/LKAPI/commit/14bc685b8b2323b4cc091938872d8b7afb67cd2f) Removing Pods directory from git (@eriksargent)
+- [aa60b05](https://github.com/lightningkite/LKAPI/commit/aa60b0579b2c30fb76ab35d7bb21428d81315937) Mergin in swift3 (@eriksargent)
+- [1096614](https://github.com/lightningkite/LKAPI/commit/10966147b3e19ff7780b3475cc48d609d74c51e0) Adding pod install to the circle.yml (@eriksargent)
+- [a5e7bbf](https://github.com/lightningkite/LKAPI/commit/a5e7bbf7eb886a427e8b559f76368f1052227267) change gitignore (@abrahamdone)
+- [3c37375](https://github.com/lightningkite/LKAPI/commit/3c3737526ba38693165da925adeb9f7f705fe24a) podspec update (@abrahamdone)
+- [9637786](https://github.com/lightningkite/LKAPI/commit/9637786628aa488254e47bbae5e4f1488ade9c40) swift 3 (@abrahamdone)
+- [7fc0c11](https://github.com/lightningkite/LKAPI/commit/7fc0c11132e30a26dea47fed2019cd40587f5ee0) missing Alamofire file (@abrahamdone)
+- [b97e39b](https://github.com/lightningkite/LKAPI/commit/b97e39b2e223f9924962bbb40c1afad8fe81c089) conformance to Alamofire 4.0 (@abrahamdone)
+- [42d1a1a](https://github.com/lightningkite/LKAPI/commit/42d1a1ad2ab51f88f9b67fe1afe51363d8af9ab3) Update circle.yml (@abrahamdone)
+- [6f669b3](https://github.com/lightningkite/LKAPI/commit/6f669b3202368247a3f19e578f224b833fafb810) Migrating to swift 3 (@eriksargent)
+
+### 1.1.0 (2016/08/22 19:11 +00:00)
+- [b221b11](https://github.com/lightningkite/LKAPI/commit/b221b1192796bbeab3ae34893a02fbb105de3a18) Bumping the version number (@eriksargent)
+- [#1](https://github.com/LightningKite/LKAPI/pull/1) Merge pull request #1 from lightningkite/Parsing (@lightningkite)
+- [32814a1](https://github.com/lightningkite/LKAPI/commit/32814a1df8e9e322fab20371881b369d5a007e72) Adding in parsing (@eriksargent)
+- [442ace2](https://github.com/lightningkite/LKAPI/commit/442ace2a9127b6e8b326ec3838d04bd96618767a) Updating changelog (@eriksargent)
+
 ### 1.0.2 (2016/05/05 16:25 +00:00)
 - [54e91c9](https://github.com/lightningkite/LKAPI/commit/54e91c986eebcd4d0ec6d8982058a6e70ec6d0c4) Updating podspec (@eriksargent)
 - [4fc88b7](https://github.com/lightningkite/LKAPI/commit/4fc88b7ba50088b42eb7a7ecd24a8ba6f0b0d605) Improving documentation (@eriksargent)
