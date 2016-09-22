@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "LKAPI"
-  s.version          = "1.2.0"
+  s.version          = "1.2.1"
   s.summary          = "Wrapper around Alamofire"
   s.description      = "Wrapper built around Alamofire to make working with APIs easier"
   s.homepage         = "https://github.com/Lightningkite/LKAPI"

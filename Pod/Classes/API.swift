@@ -13,7 +13,7 @@ import Alamofire
 
 
 ///Successful request callback
-public typealias successCallback = ((AnyObject?) -> ())
+public typealias successCallback = ((Any?) -> ())
 ///Failed request callback
 public typealias failureCallback = ((Failure) -> ())
 ///Represents a header for a request
@@ -110,7 +110,7 @@ public protocol Routable: URLRequestConvertible {
 	var method: Alamofire.HTTPMethod { get }
 	
 	///Path to the endpoint
-	var path: URL { get }
+	var path: URL? { get }
 	
 	///Optional parameters to send up in the body of each request
 	var parameters: ModelDict? { get }
@@ -129,6 +129,10 @@ public protocol Routable: URLRequestConvertible {
 public extension Routable {
 	///URLRequest object
     public func asURLRequest() throws -> URLRequest {
+		guard let path = path else {
+			throw AFError.invalidURL(url: "")
+		}
+		
         var request = URLRequest(url: path)
         request.httpMethod = method.rawValue
         
