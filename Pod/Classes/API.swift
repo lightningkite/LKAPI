@@ -249,7 +249,7 @@ open class API {
 				}
 				
 				//Otherwise it was a success, so return the data
-				success?(response.result.value as? AnyObject)
+				success?(response.result.value)
 				
 			}.description
 	}
