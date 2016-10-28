@@ -135,7 +135,7 @@ enum Router: Routable {
 		}
 	}
 	
-	var path: URL {
+	var path: URL? {
 		switch self {
 		case .getTest:
 			return URL(string: "http://httpbin.org/get")!
