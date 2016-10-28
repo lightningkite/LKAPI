@@ -1,6 +1,12 @@
 ## Change Log
 
-### upcoming (2016/09/15 16:14 +00:00)
+### upcoming (2016/10/28 23:03 +00:00)
+- [#3](https://github.com/LightningKite/LKAPI/pull/3) Merge pull request #3 from lightningkite/RequestReturningAnyObject (@lightningkite)
+- [e68c4e9](https://github.com/lightningkite/LKAPI/commit/e68c4e91481487028dedebae54b5f968f9f23ac1) Removing the last remaining AnyObject, and fixing a test (@eriksargent)
+
+### 1.2.1 (2016/09/22 16:40 +00:00)
+- [98448f7](https://github.com/lightningkite/LKAPI/commit/98448f76fec529a44273a8ddbb9900795a87cf72) Making URL's optional (@eriksargent)
+- [eee8988](https://github.com/lightningkite/LKAPI/commit/eee8988d7f9abe839f0b66ac9db65fedb5c0a6f5) Updating the changelog (@eriksargent)
 - [d37d9e0](https://github.com/lightningkite/LKAPI/commit/d37d9e017facfcf93344c04dafede8c1b24ceafb) UPdating cocoapods (@eriksargent)
 
 ### 1.2.0 (2016/09/15 15:38 +00:00)
