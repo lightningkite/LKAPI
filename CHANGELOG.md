@@ -1,6 +1,12 @@
 ## Change Log
 
-### upcoming (2016/10/28 23:03 +00:00)
+### 1.2.3 (2017/03/28 22:28 +00:00)
+- [5ad9db2](https://github.com/lightningkite/LKAPI/commit/5ad9db2ecd7d63173f669a4cb6d8b29b3cbde615) Updating the podspec (@eriksargent)
+- [d8ff579](https://github.com/lightningkite/LKAPI/commit/d8ff579617bdc1cd5c1bb6e29e14016e193be8ee) Updates for Swift 3.1 (@eriksargent)
+- [ffee87b](https://github.com/lightningkite/LKAPI/commit/ffee87bbac9672ba7d3f9774a013d6d7dd21b894) Updating the changelog (@eriksargent)
+
+### 1.2.2 (2016/10/28 23:02 +00:00)
+- [01c9b5a](https://github.com/lightningkite/LKAPI/commit/01c9b5a6f33d4a7030e349e9922c616e509265fa) Bumping the build number (@eriksargent)
 - [#3](https://github.com/LightningKite/LKAPI/pull/3) Merge pull request #3 from lightningkite/RequestReturningAnyObject (@lightningkite)
 - [e68c4e9](https://github.com/lightningkite/LKAPI/commit/e68c4e91481487028dedebae54b5f968f9f23ac1) Removing the last remaining AnyObject, and fixing a test (@eriksargent)
 
