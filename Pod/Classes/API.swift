@@ -46,7 +46,7 @@ extension ModelType {
 public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 	///Try to parse an object out of the dictionary, and return the fallback if it fails
 	public func parse<T>(_ key: String) -> T? {
-		if let dict = (self as? Any) as? ModelDict, let object = dict[key] as? T {
+		if let dict = self as? ModelDict, let object = dict[key] as? T {
 			return object
 		}
 		
@@ -55,7 +55,7 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 	
 	///Try to parse an object out of the dictionary, and return the fallback if it fails
 	public func parse<T>(_ key: String, or fallback: T) -> T {
-		if let dict = (self as? Any) as? ModelDict, let object = dict[key] as? T {
+		if let dict = self as? ModelDict, let object = dict[key] as? T {
 			return object
 		}
 		
@@ -64,7 +64,7 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 	
 	///Parse the field as a Parseable
 	public func parse<T>(_ key: String) -> T? where T: Parseable {
-		if let dict = (self as? Any) as? ModelDict, let object = dict[key] {
+		if let dict = self as? ModelDict, let object = dict[key] {
 			return T.parse(object) as? T
 		}
 		
@@ -73,7 +73,7 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 	
 	///Parse the dictionary as a ModelType
 	public func parse<T>() -> T? where T: ModelType {
-		if let dict = (self as? Any) as? ModelDict {
+		if let dict = self as? ModelDict {
 			return T(data: dict)
 		}
 		
@@ -240,7 +240,7 @@ open class API {
 							}
 						}
 						
-						print("Status code \(response.response?.statusCode). message: \(message)\ndata: \(responseData)\n\n")
+						print("Status code \(response.response?.statusCode ?? -1). message: \(message)\ndata: \(responseData)\n\n")
 						
 						failure?(Failure(error: error, message: message, code: response.response?.statusCode, data: responseData))
 					}
@@ -258,13 +258,11 @@ open class API {
 ///Mocked data for testing requests
 public extension API {
 	///Load in and parse the stored JSON file
-	public class func mockedDataObject(_ path: String) -> AnyObject? {
+	public class func mockedDataObject(_ path: String) -> Any? {
 		do {
-			if let dataPath = Bundle.main.path(forResource: path, ofType: "json"),
-				let data = try? Data(contentsOf: URL(fileURLWithPath: dataPath)),
-				let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? AnyObject {
-					
-					return json
+			if let dataPath = Bundle.main.path(forResource: path, ofType: "json"), let data = try? Data(contentsOf: URL(fileURLWithPath: dataPath)) {
+				let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+				return json
 			}
 			else {
 				print("❌ Unable to load file: \(path)")

@@ -70,7 +70,7 @@ class APITests: XCTestCase {
 				XCTAssertEqual(some, "data")
 			}
 			else {
-				print(data)
+				print(data ?? "Data is nil")
 				XCTFail("Unable to cast data")
 			}
 			
@@ -108,7 +108,7 @@ class APITests: XCTestCase {
 				XCTAssertEqual(test, "data")
 			}
 			else {
-				print(data)
+				print(data ?? "Data is nil")
 				XCTFail("Unable to cast data")
 			}
 		}) { error in
