@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		06B7E811FF9950DEA416F455 /* Pods_LKAPI_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B876C0A737409CA7D1E49274 /* Pods_LKAPI_Tests.framework */; };
 		607FACEC1AFB9204008FA782 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* APITests.swift */; };
+		BF293BF11ECCDF2B00678711 /* StringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF293BF01ECCDF2B00678711 /* StringTests.swift */; };
 		BFFB61AC1D6B684600E7B5C3 /* ParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFB61AB1D6B684600E7B5C3 /* ParsingTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 		8642178C40AD8705BC647625 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		AF213812B10805C7C6D522F1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B876C0A737409CA7D1E49274 /* Pods_LKAPI_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LKAPI_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF293BF01ECCDF2B00678711 /* StringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTests.swift; sourceTree = "<group>"; };
 		BFFB61AB1D6B684600E7B5C3 /* ParsingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingTests.swift; sourceTree = "<group>"; };
 		DBDD8842462905F99CB51A11 /* Pods-LKAPI_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LKAPI_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LKAPI_Tests/Pods-LKAPI_Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +72,7 @@
 			children = (
 				607FACEB1AFB9204008FA782 /* APITests.swift */,
 				BFFB61AB1D6B684600E7B5C3 /* ParsingTests.swift */,
+				BF293BF01ECCDF2B00678711 /* StringTests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -196,7 +199,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		FC5DBFD43FF64C5BE7C072AF /* [CP] Embed Pods Frameworks */ = {
@@ -222,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFFB61AC1D6B684600E7B5C3 /* ParsingTests.swift in Sources */,
+				BF293BF11ECCDF2B00678711 /* StringTests.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* APITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
