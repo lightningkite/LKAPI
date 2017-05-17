@@ -1,5 +1,11 @@
 ## Change Log
 
+### 1.3.0 (2017/05/17 19:59 +00:00)
+- [8cbf0e2](https://github.com/lightningkite/LKAPI/commit/8cbf0e2e9703a43a035b9b080f9fc05c88317320) Bumping the version number (@eriksargent)
+- [078ff4a](https://github.com/lightningkite/LKAPI/commit/078ff4a7a166158ff178c5842a2bd2e14e4ada39) Adding some helpful string extensions (@eriksargent)
+- [ac3de60](https://github.com/lightningkite/LKAPI/commit/ac3de60767ed1c579a145a9f3f1e643ec5986ffc) Updating the xcode version for circle (@eriksargent)
+- [7750c45](https://github.com/lightningkite/LKAPI/commit/7750c452783ed8dc8301b5d9f539b2449784d2a2) Updating the changelog (@eriksargent)
+
 ### 1.2.3 (2017/03/28 22:28 +00:00)
 - [5ad9db2](https://github.com/lightningkite/LKAPI/commit/5ad9db2ecd7d63173f669a4cb6d8b29b3cbde615) Updating the podspec (@eriksargent)
 - [d8ff579](https://github.com/lightningkite/LKAPI/commit/d8ff579617bdc1cd5c1bb6e29e14016e193be8ee) Updates for Swift 3.1 (@eriksargent)
