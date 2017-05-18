@@ -1,5 +1,9 @@
 ## Change Log
 
+### 1.4.0 (2017/05/18 22:53 +00:00)
+- [175374a](https://github.com/lightningkite/LKAPI/commit/175374a51c8ce7c4ea83b3b75330359e02e89217) Adding the ability to override the Alamofire SessionManager that is used for all requests (@eriksargent)
+- [95e7598](https://github.com/lightningkite/LKAPI/commit/95e75986add99be8f74950d1d05b10957c160a46) Updating the changelog (@eriksargent)
+
 ### 1.3.1 (2017/05/18 19:09 +00:00)
 - [24ea246](https://github.com/lightningkite/LKAPI/commit/24ea246b5db08279848aef9ebc28729eb0847931) Bumping build number (@eriksargent)
 - [#4](https://github.com/LightningKite/LKAPI/pull/4) Merge pull request #4 from lightningkite/snakeNumbers (@lightningkite)
