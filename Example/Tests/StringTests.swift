@@ -12,9 +12,13 @@ import XCTest
 class StringTests: XCTestCase {
 	let camel = "thisIsWonderfulCamelCase"
 	let snakedCamel = "this_is_wonderful_camel_case"
+    let numberCamel = "thisAnd34Numbers"
+    let snakedNumberCamel = "this_and_34_numbers"
 	
 	let SuperCamel = "ThisIsWonderfulCamelCase"
 	let snakedSuperCamel = "this_is_wonderful_camel_case"
+    let numberSnake = "this_is_34_and_some"
+    let cameledNumberSnake = "thisIs34AndSome"
 	
 	let snake = "this_is_horrible_snake_case"
 	let cameledSnake = "thisIsHorribleSnakeCase"
@@ -50,6 +54,7 @@ class StringTests: XCTestCase {
 		XCTAssertEqual(emoji.toCamel, cameledEmoji)
 		XCTAssertEqual(kata.toCamel, cameledKata)
 		XCTAssertEqual(accented.toCamel, accented)
+        XCTAssertEqual(numberSnake.toCamel, cameledNumberSnake)
 	}
 	
 	func testToSnake() {
@@ -62,6 +67,7 @@ class StringTests: XCTestCase {
 		XCTAssertEqual(emoji.toSnake, emoji)
 		XCTAssertEqual(kata.toSnake, kata)
 		XCTAssertEqual(accented.toSnake, accented)
+        XCTAssertEqual(numberCamel.toSnake, snakedNumberCamel)
 	}
 	
 	func testIsDate() {
