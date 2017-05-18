@@ -27,23 +27,19 @@ extension String {
 		return value
 	}
 	
-	public var toSnake: String {
-		var value = self
-		
-		while true {
-			if let range = value.rangeOfCharacter(from: .uppercaseLetters) {
-				var letter = value.substring(with: range).lowercased()
-				if value.distance(from: value.startIndex, to: range.lowerBound) > 0 && !value.substring(with: value.index(before: range.lowerBound)..<range.upperBound).contains("_") {
-					letter = "_" + letter
-				}
-				value.replaceSubrange(range, with: letter)
-			} else {
-				break
-			}
-		}
-		
-		return value
-	}
+    public var toSnake: String {
+        return unicodeScalars.reduce("") {
+            if let last = $0.unicodeScalars.last, CharacterSet.uppercaseLetters.union(CharacterSet.decimalDigits).contains($1) && last != "_" {
+                if CharacterSet.decimalDigits.contains(last) && CharacterSet.decimalDigits.contains($1) {
+                    return $0 + String($1)
+                } else {
+                    return $0 + "_" + String($1).lowercased()
+                }
+            } else {
+                return $0 + String($1).lowercased()
+            }
+        }
+    }
 	
 	public var isDate: Bool {
 		guard let regex = try? NSRegularExpression(pattern: "^\\d{1,4}-\\d{1,2}-\\d{1,2}$", options: []) else {
