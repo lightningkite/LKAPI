@@ -179,7 +179,7 @@ public extension Routable {
 ///API request manager
 open class API {
 	///Make a network request based on a route
-	open class func request(_ route: Routable, success: successCallback?, failure: failureCallback?) {
+	open class func request(_ route: Routable, session: SessionManager = Alamofire.SessionManager.default, success: successCallback?, failure: failureCallback?) {
         guard let routeURL = route.urlRequest else {
             
             return
@@ -191,17 +191,17 @@ open class API {
 				success?(mockData)
 			}
 			else {
-				request(routeURL, success: success, failure: failure)
+				request(routeURL, session: session, success: success, failure: failure)
 			}
 		}
 		else {
-			request(routeURL, success: success, failure: failure)
+			request(routeURL, session: session, success: success, failure: failure)
 		}
 	}
 	
 	
 	///Make a general network request
-	open class func request(_ URLRequest: Foundation.URLRequest, success: successCallback?, failure: failureCallback?) {
+	open class func request(_ URLRequest: Foundation.URLRequest, session: SessionManager = Alamofire.SessionManager.default, success: successCallback?, failure: failureCallback?) {
 		var debugString = ""
 		if URLRequest.urlRequest?.httpMethod == "GET" {
 			debugString += "⬇️"
@@ -209,7 +209,7 @@ open class API {
 			debugString += "⬆️"
 		}
 		
-		debugString += Alamofire.request(URLRequest)
+		debugString += session.request(URLRequest)
 			.validate()
 			.responseJSON { response in
 				
