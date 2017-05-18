@@ -1,5 +1,11 @@
 ## Change Log
 
+### 1.3.1 (2017/05/18 19:09 +00:00)
+- [24ea246](https://github.com/lightningkite/LKAPI/commit/24ea246b5db08279848aef9ebc28729eb0847931) Bumping build number (@eriksargent)
+- [#4](https://github.com/LightningKite/LKAPI/pull/4) Merge pull request #4 from lightningkite/snakeNumbers (@lightningkite)
+- [98062cc](https://github.com/lightningkite/LKAPI/commit/98062cc5bf9ab8d077cfe1397924e5f8185c442f) added support for numbers in snake case (@abrahamdone)
+- [3d668cf](https://github.com/lightningkite/LKAPI/commit/3d668cf190b8f1a841e9d042fcab8e70d55f8b38) UPdating hte changelog (@eriksargent)
+
 ### 1.3.0 (2017/05/17 19:59 +00:00)
 - [8cbf0e2](https://github.com/lightningkite/LKAPI/commit/8cbf0e2e9703a43a035b9b080f9fc05c88317320) Bumping the version number (@eriksargent)
 - [078ff4a](https://github.com/lightningkite/LKAPI/commit/078ff4a7a166158ff178c5842a2bd2e14e4ada39) Adding some helpful string extensions (@eriksargent)
