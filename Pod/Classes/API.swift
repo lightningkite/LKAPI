@@ -63,7 +63,7 @@ public extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 	}
 	
 	///Parse the field as a Parseable
-	public func parse<T>(_ key: String) -> T? where T: Parseable {
+	public func parse<T>(from key: String) -> T? where T: Parseable {
 		if let dict = self as? ModelDict, let object = dict[key] {
 			return T.parse(object) as? T
 		}
