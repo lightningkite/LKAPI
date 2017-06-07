@@ -1,5 +1,9 @@
 ## Change Log
 
+### 1.4.1 (2017/06/07 22:29 +00:00)
+- [cdde6c3](https://github.com/lightningkite/LKAPI/commit/cdde6c37ae8d60a5eac23f21e4f1d77c7cd8b679) Improving parsing (@eriksargent)
+- [1e2093a](https://github.com/lightningkite/LKAPI/commit/1e2093a44b9dea6f23ae01607780f4bb23972575) Updating the changelog (@eriksargent)
+
 ### 1.4.0 (2017/05/18 22:53 +00:00)
 - [175374a](https://github.com/lightningkite/LKAPI/commit/175374a51c8ce7c4ea83b3b75330359e02e89217) Adding the ability to override the Alamofire SessionManager that is used for all requests (@eriksargent)
 - [95e7598](https://github.com/lightningkite/LKAPI/commit/95e75986add99be8f74950d1d05b10957c160a46) Updating the changelog (@eriksargent)
