@@ -90,7 +90,7 @@ class ParsingTests: XCTestCase {
 			]
 		]
 		
-		let parsed: ObjectType? = dict.parse("object")
+		let parsed: ObjectType? = dict.parse(from: "object")
 		
 		XCTAssertEqual(parsed?.id, 3)
 		XCTAssertEqual(parsed?.name, "Test")
@@ -101,7 +101,7 @@ class ParsingTests: XCTestCase {
 			"date": "2222-03-06"
 		]
 		
-		let parsedDate = dict.parse("date") as Date?
+		let parsedDate = dict.parse(from: "date") as Date?
 		
 		XCTAssertNotNil(parsedDate)
 		guard let date = parsedDate else {
@@ -136,7 +136,7 @@ class ParsingTests: XCTestCase {
 			init(data: ModelDict) {
 				id = data.parse("id", or: 0)
 				name = data.parse("name", or: "")
-				other = data.parse("otherModel") as OtherModel?
+				other = data.parse(from: "otherModel") as OtherModel?
 			}
 		}
 		
