@@ -227,7 +227,7 @@ open class API {
 						var message = "There was an error"
 						var responseData = ModelDict()
 						
-						if let data = response.data, let values = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? ModelDict {
+						if let data = response.data, let values = (try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) as? ModelDict {
 							responseData = values
 							if let error = values["message"] as? String {
 								message = error
