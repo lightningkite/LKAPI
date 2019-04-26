@@ -4,7 +4,7 @@ use_frameworks!
 platform :ios, '9.0'
 
 target 'LKAPI_Tests' do
-  pod 'Alamofire'
+  pod 'Alamofire', '~> 4.0.0'
   pod 'LKAPI', :path => '../'
 end
 
