@@ -11,12 +11,12 @@ open class Environment {
 	fileprivate var _environmentDict: [String: AnyObject]? = nil
 	
 	///Description of the current target
-	open static var envDescription: String {
+	public static var envDescription: String {
 		return Environment.environmentDict["description"] as? String ?? ""
 	}
 	
 	///Loads data from the Target_Name-Env File
-	open static var environmentDict: [String: AnyObject] {
+	public static var environmentDict: [String: AnyObject] {
 		if let environment = currentEnvironment._environmentDict {
 			return environment
 		}

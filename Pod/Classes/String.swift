@@ -46,7 +46,7 @@ extension String {
 			return false
 		}
 		
-		let matches = regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.characters.count))
+		let matches = regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.count))
 		
 		return matches.count > 0
 	}
@@ -56,7 +56,7 @@ extension String {
 			return false
 		}
 		
-		let matches = regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.characters.count))
+		let matches = regex.matches(in: self, options: [], range: NSRange(location: 0, length: self.count))
 		
 		return matches.count > 0
 	}

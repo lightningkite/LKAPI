@@ -1,20 +1,24 @@
 PODS:
-  - Alamofire (4.4.0)
-  - LKAPI (1.4.1):
+  - Alamofire (4.0.1)
+  - LKAPI (1.4.3):
     - Alamofire
 
 DEPENDENCIES:
-  - Alamofire
+  - Alamofire (~> 4.0.0)
   - LKAPI (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
 
 EXTERNAL SOURCES:
   LKAPI:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
-  LKAPI: 00db24f0a93d1eaf62bacb3c594343878c8b5e92
+  Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
+  LKAPI: 33fe38b842d7d0529a898f2990745e2ffa83c6c8
 
-PODFILE CHECKSUM: '0293954057b7f5af945b7e06279b1d86a8c755f1'
+PODFILE CHECKSUM: 75b41370221964c60549d037bf81b5f1ca0819e8
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.6.0.rc.2
