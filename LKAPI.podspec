@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "LKAPI"
-  s.version      = "1.4.3"
+  s.version      = "1.4.4"
   s.summary      = "Wrapper built around Alamofire to make working with APIs easier"
 
   # This description is used to generate tags and improve search results.
