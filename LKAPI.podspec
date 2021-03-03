@@ -6,7 +6,7 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-Pod::Spec.new do |spec|
+Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -15,18 +15,18 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "LKAPI"
-  spec.version      = "1.4.3"
-  spec.summary      = "Wrapper built around Alamofire to make working with APIs easier"
+  s.name         = "LKAPI"
+  s.version      = "1.4.3"
+  s.summary      = "Wrapper built around Alamofire to make working with APIs easier"
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
   #   * Try to keep it short, snappy and to the point.
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
-  spec.description  = "Wrapper built around Alamofire to make working with APIs easier"
+  s.description  = "Wrapper built around Alamofire to make working with APIs easier"
 
-  spec.homepage     = "https://github.com/Lightningkite/LKAPI"
+  s.homepage     = "https://github.com/Lightningkite/LKAPI"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -37,7 +37,7 @@ Pod::Spec.new do |spec|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  spec.license      = "MIT"
+  s.license      = "MIT"
   # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
 
 
@@ -51,7 +51,7 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "Erik Sargent" => "erik@lightningkite.com" }
+  s.author             = { "Erik Sargent" => "erik@lightningkite.com" }
   # Or just: spec.author    = "Shane Thompson"
   # spec.authors            = { "Shane Thompson" => "shane@meosphere.com" }
   # spec.social_media_url   = "https://twitter.com/Shane Thompson"
@@ -63,7 +63,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.platform     = :ios
-  spec.platform     = :ios, "9.0"
+  s.platform     = :ios, "9.0"
 
   #  When using multiple platforms
   # spec.ios.deployment_target = "5.0"
@@ -78,7 +78,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/Lightningkite/LKAPI.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/Lightningkite/LKAPI.git", :tag => s.version.to_s }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -89,7 +89,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Pod/Classes/**/*"
+  s.source_files  = "Pod/Classes/**/*"
 
   # spec.public_header_files = "Classes/**/*.h"
 
@@ -114,7 +114,7 @@ Pod::Spec.new do |spec|
   #  the lib prefix of their name.
   #
 
-  spec.framework  = "SystemConfiguration"
+  s.framework  = "SystemConfiguration"
   # spec.frameworks = "SomeFramework", "AnotherFramework"
 
   # spec.library   = "iconv"
@@ -127,9 +127,9 @@ Pod::Spec.new do |spec|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  spec.requires_arc = true
+  s.requires_arc = true
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  spec.dependency "Alamofire"
+  s.dependency "Alamofire"
 
 end
