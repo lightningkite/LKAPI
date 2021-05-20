@@ -179,7 +179,7 @@ public extension Routable {
 ///API request manager
 open class API {
 	///Make a network request based on a route
-	open class func request(_ route: Routable, session: SessionManager = Alamofire.SessionManager.default, success: successCallback?, failure: failureCallback?) {
+	open class func request(_ route: Routable, session: Session = Alamofire.Session.default, success: successCallback?, failure: failureCallback?) {
         guard let routeURL = route.urlRequest else {
             
             return
@@ -201,7 +201,7 @@ open class API {
 	
 	
 	///Make a general network request
-	open class func request(_ URLRequest: Foundation.URLRequest, session: SessionManager = Alamofire.SessionManager.default, success: successCallback?, failure: failureCallback?) {
+	open class func request(_ URLRequest: Foundation.URLRequest, session: Session = Alamofire.Session.default, success: successCallback?, failure: failureCallback?) {
 		var debugString = ""
 		if URLRequest.urlRequest?.httpMethod == "GET" {
 			debugString += "⬇️"
@@ -212,18 +212,18 @@ open class API {
 		debugString += session.request(URLRequest)
 			.validate()
 			.responseJSON { response in
-				
-				debugString += response.result.isSuccess ? " ✅" : " ❌"
+				let isSuccess = (response.response?.statusCode ?? 0) / 100 == 2
+                debugString += isSuccess ? " ✅" : " ❌"
 				print(debugString)
 				
 				//Make sure there was no error
-				guard response.result.isSuccess else {
+				guard isSuccess else {
 					//test if the response was 204 (no data), but the validation failed because there was...no data
 					if response.response?.statusCode == 204 {
 						success?(nil)
 					}
 					//else there really was an error, so parse any data, and return a failure
-					else if let error = response.result.error {
+					else if let error = response.error {
 						var message = "There was an error"
 						var responseData = ModelDict()
 						
@@ -246,7 +246,7 @@ open class API {
 				}
 				
 				//Otherwise it was a success, so return the data
-				success?(response.result.value)
+                success?(response.value)
 				
 			}.description
 	}
